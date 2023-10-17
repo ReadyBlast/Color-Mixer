@@ -8,75 +8,100 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var colorView: UIView!
     
-    @IBOutlet weak var redSliderValue: UILabel!
-    @IBOutlet weak var greenSliderValue: UILabel!
-    @IBOutlet weak var blueSliderValue: UILabel!
-    @IBOutlet weak var coloredView: UIView!
+    @IBOutlet weak var redValueLabel: UILabel!
+    @IBOutlet weak var greenValueLabel: UILabel!
+    @IBOutlet weak var blueValueLabel: UILabel!
     
-    @IBOutlet weak var blueSlider: UISlider!
-    @IBOutlet weak var greenSlider: UISlider!
-    @IBOutlet weak var redSlider: UISlider!
+    @IBOutlet weak var redValueSlider: UISlider!
+    @IBOutlet weak var greenValueSlider: UISlider!
+    @IBOutlet weak var blueValueSlider: UISlider!
+    
+    let minColorValue: Float = 0
+    let maxColorValue: Float = 255
+    var mediumColorValue: Float {
+        return (maxColorValue - minColorValue) / 2 + minColorValue
+    }
+    var slidersArray: [UISlider] {
+        return [redValueSlider, greenValueSlider, blueValueSlider]
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        redSlider.value = (redSlider.maximumValue - redSlider.minimumValue) / 2 + redSlider.minimumValue
-        greenSlider.value = (greenSlider.maximumValue - greenSlider.minimumValue) / 2 + greenSlider.minimumValue
-        blueSlider.value = (blueSlider.maximumValue - blueSlider.minimumValue) / 2 + blueSlider.minimumValue
+        initialSetupForSliders()
         
-        colorValueChanger(color: "red", value: redSlider.value)
-        colorValueChanger(color: "blue", value: greenSlider.value)
-        colorValueChanger(color: "green", value: blueSlider.value)
+        updateColorView()
+    }
+
+    @IBAction func minButtonPressed(_ sender: Any) {
+        updateAllSlidersValue(minColorValue)
+        
+        updateSlidersLabels()
+        
+        updateColorView()
+    }
+    @IBAction func mediumButtonPressed(_ sender: Any) {
+        updateAllSlidersValue(mediumColorValue)
+        
+        updateSlidersLabels()
+        
+        updateColorView()
+    }
+    @IBAction func maxButtonPressed(_ sender: Any) {
+        updateAllSlidersValue(maxColorValue)
+        
+        updateSlidersLabels()
+        
+        updateColorView()
+    }
+    @IBAction func redValueChanged(_ sender: Any) {
+        updateSlidersLabels()
+        updateColorView()
+    }
+    @IBAction func greenValueChanged(_ sender: Any) {
+        updateSlidersLabels()
+        updateColorView()
+    }
+    @IBAction func blueValueChanged(_ sender: Any) {
+        updateSlidersLabels()
+        updateColorView()
     }
     
-    func colorValueChanger(color: String, value: Float) {
-        switch color {
-        case "red":
-            coloredView.backgroundColor = UIColor(red: CGFloat(value / 255.0), green: CGFloat(greenSlider.value / 255.0), blue: CGFloat(blueSlider.value / 255.0), alpha: CGFloat(1.0))
-            redSliderValue.text = "\(Int(redSlider.value))"
-        case "green":
-            coloredView.backgroundColor = UIColor(red: CGFloat(redSlider.value / 255.0), green: CGFloat(value / 255.0), blue: CGFloat(blueSlider.value / 255.0), alpha: CGFloat(1.0))
-            greenSliderValue.text = "\(Int(greenSlider.value))"
-        case "blue":
-            coloredView.backgroundColor = UIColor(red: CGFloat(redSlider.value / 255.0), green: CGFloat(greenSlider.value / 255.0), blue: CGFloat(value / 255.0), alpha: CGFloat(1.0))
-            blueSliderValue.text = "\(Int(blueSlider.value))"
-        default: break
+    func updateColorView() {
+        let redValue = CGFloat(redValueSlider.value) / CGFloat(maxColorValue)
+        let greenValue = CGFloat(greenValueSlider.value) / CGFloat(maxColorValue)
+        let blueValue = CGFloat(blueValueSlider.value) / CGFloat(maxColorValue)
+        
+        colorView.backgroundColor = UIColor(red: redValue,
+                                            green: greenValue,
+                                            blue: blueValue,
+                                            alpha: 1.0)
+    }
+    
+    func updateSlidersLabels() {
+        redValueLabel.text = "\(Int(redValueSlider.value))"
+        greenValueLabel.text = "\(Int(greenValueSlider.value))"
+        blueValueLabel.text = "\(Int(blueValueSlider.value))"
+    }
+    
+    func updateAllSlidersValue(_ value: Float) {
+        for slider in slidersArray {
+            slider.value = value
         }
     }
     
-    func allColorValuesChanger(value: Float) {
-        redSlider.value = value
-        blueSlider.value = value
-        greenSlider.value = value
-        
-        colorValueChanger(color: "red", value: value)
-        colorValueChanger(color: "blue", value: value)
-        colorValueChanger(color: "green", value: value)
-    }
-
-
-
-    @IBAction func setMinValue(_ sender: Any) {
-        allColorValuesChanger(value: 0.0)
-    }
-    @IBAction func setMediumValue(_ sender: Any) {
-        allColorValuesChanger(value: 127.0)
-    }
-    @IBAction func setMaxValue(_ sender: Any) {
-        allColorValuesChanger(value: 255.0)
+    func setupBoundaryValue(for slider: UISlider) {
+        slider.minimumValue = minColorValue
+        slider.maximumValue = maxColorValue
     }
     
-    @IBAction func changeRColorValue(_ sender: Any) {
-        colorValueChanger(color: "red", value: redSlider.value)
-    }
-    
-    @IBAction func changeGColorValue(_ sender: Any) {
-        colorValueChanger(color: "green", value: greenSlider.value)
-    }
-    
-    @IBAction func changeBColorValue(_ sender: Any) {
-        colorValueChanger(color: "blue", value: blueSlider.value)
+    func initialSetupForSliders() {
+        for slider in slidersArray {
+            setupBoundaryValue(for: slider)
+        }
+        updateAllSlidersValue(mediumColorValue)
+        updateSlidersLabels()
     }
 }
-
