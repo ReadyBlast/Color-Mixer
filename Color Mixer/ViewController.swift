@@ -13,18 +13,27 @@ class ViewController: UIViewController {
     @IBOutlet weak var redValueLabel: UILabel!
     @IBOutlet weak var greenValueLabel: UILabel!
     @IBOutlet weak var blueValueLabel: UILabel!
+    @IBOutlet weak var alphaValueLabel: UILabel!
     
     @IBOutlet weak var redValueSlider: UISlider!
     @IBOutlet weak var greenValueSlider: UISlider!
     @IBOutlet weak var blueValueSlider: UISlider!
+    @IBOutlet weak var alphaValueSlider: UISlider!
     
     let minColorValue: Float = 0
     let maxColorValue: Float = 255
+//    let minAlphaValue: Float = 0
+//    let maxAlphaLabel: Float = 100
+    
     var mediumColorValue: Float {
         return (maxColorValue - minColorValue) / 2 + minColorValue
     }
+//    var mediumAlphaValue: Float {
+//        return (maxAlphaLabel - minAlphaValue) / 2 + minAlphaValue
+//    }
+    
     var slidersArray: [UISlider] {
-        return [redValueSlider, greenValueSlider, blueValueSlider]
+        return [redValueSlider, greenValueSlider, blueValueSlider, alphaValueSlider]
     }
     
     override func viewDidLoad() {
@@ -73,17 +82,19 @@ class ViewController: UIViewController {
         let redValue = CGFloat(redValueSlider.value) / CGFloat(maxColorValue)
         let greenValue = CGFloat(greenValueSlider.value) / CGFloat(maxColorValue)
         let blueValue = CGFloat(blueValueSlider.value) / CGFloat(maxColorValue)
+        let alphaValue = CGFloat(alphaValueSlider.value) / CGFloat(maxColorValue)
         
         colorView.backgroundColor = UIColor(red: redValue,
                                             green: greenValue,
                                             blue: blueValue,
-                                            alpha: 1.0)
+                                            alpha: alphaValue)
     }
     
     func updateSlidersLabels() {
         redValueLabel.text = "\(Int(redValueSlider.value))"
         greenValueLabel.text = "\(Int(greenValueSlider.value))"
         blueValueLabel.text = "\(Int(blueValueSlider.value))"
+        alphaValueLabel.text = "\(Int(alphaValueSlider.value / maxColorValue * 100))%"
     }
     
     func updateAllSlidersValue(_ value: Float) {
